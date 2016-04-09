@@ -14,6 +14,12 @@ var handlebars = require('express-handlebars');
 require("dotenv").load();
 var models = require("./models");
 var db = mongoose.connection;
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/cogs121Assignment1');
+db.on('error', console.error.bind(console, 'Mongo DB Connection Error:'));
+db.once('open', function(callback) {
+    console.log("Database connected successfully.");
+});
+
 
 var router = { 
 	index: require("./routes/index")
@@ -36,7 +42,7 @@ var strategy = {
 // session middleware
 var session_middleware = session({
     key: "session",
-    secret: process.env.SESSION_SECRET,
+    secret: "4fa238c5d0d632881b6786f3b2d944950169948f",
     saveUninitialized: true,
     resave: true,
     store: new MongoStore({ mongooseConnection: db })
@@ -59,8 +65,8 @@ app.use(passport.session());
 
 /* TODO: Use Twitter Strategy for Passport here */
 passport.use(new strategy.Twitter({
-    consumerKey: process.env.TWITTER_CONSUMER_KEY,
-    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+    consumerKey: "dXmk0tXcFdREsVq9xwDyRFhFf",
+    consumerSecret: "9vAqoAAwlbxX8RlsHuRsyOWQxRyKkQ0YkTH6JQExRm4eFN3QTu",
     callbackURL: "/auth/twitter/callback"
 }, function(token, tokenSecret, profile, done) {
 
