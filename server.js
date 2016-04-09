@@ -42,7 +42,7 @@ var strategy = {
 // session middleware
 var session_middleware = session({
     key: "session",
-    secret: "4fa238c5d0d632881b6786f3b2d944950169948f",
+    secret: process.env.SESSION_SECRET,
     saveUninitialized: true,
     resave: true,
     store: new MongoStore({ mongooseConnection: db })
@@ -65,8 +65,8 @@ app.use(passport.session());
 
 /* TODO: Use Twitter Strategy for Passport here */
 passport.use(new strategy.Twitter({
-    consumerKey: "dXmk0tXcFdREsVq9xwDyRFhFf",
-    consumerSecret: "9vAqoAAwlbxX8RlsHuRsyOWQxRyKkQ0YkTH6JQExRm4eFN3QTu",
+    consumerKey: process.env.TWITTER_CONSUMER_KEY,
+    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: "/auth/twitter/callback"
 }, function(token, tokenSecret, profile, done) {
 
@@ -114,7 +114,7 @@ app.get("/", router.index.view);
 // More routes here if needed
 app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback',
-  passport.authenticate('twitter', { successRedirect: '/',
+  passport.authenticate('twitter', { successRedirect: '/chat',
                                      failureRedirect: '/' }));
 
 // io.use(function(socket, next) {
