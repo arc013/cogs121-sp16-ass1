@@ -81,12 +81,11 @@ passport.use(new strategy.Twitter({
         newUser.photos = profile.photos;
 
         // save our user into the database
-        newUser.save(function(err) {
-            if (err)
-                throw err;
-            return done(null, newUser);
-
-    	return done(null, profile);
+         newUser.save(function(err) {
+                        if (err)
+                            throw err;
+                        return done(null, newUser);
+                    });
     } else {
         // (3) since the user is found, update user’s information
         process.nextTick(function() {
