@@ -7,25 +7,28 @@ const path = require("path");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 
-// var express = require('express');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var handlebars = require('express-handlebars');
-
-// var app = express();
 
 require("dotenv").load();
 var models = require("./models");
 var db = mongoose.connection;
 
-var router = { index: require("./routes/index") };
+var router = { 
+	index: require("./routes/index");
+};
+
+// var models = require("./");
 
 var parser = {
     body: require("body-parser"),
     cookie: require("cookie-parser")
 };
 
-var strategy = {Twitter: require('passport-twitter').Strategy };
+var strategy = {
+	Twitter: require('passport-twitter').Strategy
+};
 
 // Database Connection
 /* TODO */
@@ -59,9 +62,22 @@ passport.use(new strategy.Twitter({
     consumerKey: process.env.TWITTER_CONSUMER_KEY,
     consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: "/auth/twitter/callback"
-}, function(token, token_secret, profile, done) {
-    // What goes here? Refer to step 4.
-}));
+}, function(token, tokenSecret, profile, done) {
+    models.User.findOne({ "twitterID": profile.id }, function(err, user) {
+    // (1) Check if there is an error. If so, return done(err);
+    if(!user) {
+        // (2) since the user is not found, create new user.
+        // Refer to Assignment 0 to how create a new instance of a model
+        return done(null, profile);
+    } else {
+        // (3) since the user is found, update user’s information
+        process.nextTick(function() {
+            return done(null, profile);
+        });
+    }
+  });
+  }
+));
 /* TODO: Passport serialization here */
 passport.serializeUser(function(user, done) {
     done(null, user);
