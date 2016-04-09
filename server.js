@@ -16,7 +16,7 @@ var models = require("./models");
 var db = mongoose.connection;
 
 var router = { 
-	index: require("./routes/index");
+	index: require("./routes/index")
 };
 
 // var models = require("./");
@@ -63,12 +63,30 @@ passport.use(new strategy.Twitter({
     consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: "/auth/twitter/callback"
 }, function(token, tokenSecret, profile, done) {
+
     models.User.findOne({ "twitterID": profile.id }, function(err, user) {
     // (1) Check if there is an error. If so, return done(err);
+    if (err)
+        return done(err);
     if(!user) {
         // (2) since the user is not found, create new user.
         // Refer to Assignment 0 to how create a new instance of a model
-        return done(null, profile);
+        var newUser = new models.User();
+
+        // set all of the user data that we need
+        newUser.twitterId = profile.id;
+        newUser.token = token;
+        newUser.username = profile.username;
+        newUser.displayName = profile.displayName;
+        newUser.photos = profile.photos;
+
+        // save our user into the database
+        newUser.save(function(err) {
+            if (err)
+                throw err;
+            return done(null, newUser);
+
+    	return done(null, profile);
     } else {
         // (3) since the user is found, update user’s information
         process.nextTick(function() {
@@ -89,6 +107,10 @@ passport.deserializeUser(function(user, done) {
 /* TODO: Routes for OAuth using Passport */
 app.get("/", router.index.view);
 // More routes here if needed
+app.get('/auth/twitter', passport.authenticate('twitter'));
+app.get('/auth/twitter/callback',
+  passport.authenticate('twitter', { successRedirect: '/',
+                                     failureRedirect: '/' }));
 
 // io.use(function(socket, next) {
 //     session_middleware(socket.request, {}, next);

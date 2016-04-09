@@ -1,9 +1,11 @@
 var mongoose = require('mongoose');
 
 var twitterAuthSchema = new mongoose.Schema({
-	// email: String,
-	// content: String,
-	// created: { type: Date, default: Date.now }
+	"twitterID": String,
+    "token": String,
+    "username": String,
+    "displayName": String,
+    "photos": [String]
 
 }, {
 	collection: 'User'
