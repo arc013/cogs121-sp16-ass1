@@ -7,18 +7,25 @@ const path = require("path");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 
+// var express = require('express');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var handlebars = require('express-handlebars');
+
+// var app = express();
+
 require("dotenv").load();
 var models = require("./models");
 var db = mongoose.connection;
 
-var router = { /* TODO */};
+var router = { index: require("./routes/index") };
 
 var parser = {
     body: require("body-parser"),
     cookie: require("cookie-parser")
 };
 
-var strategy = { /* TODO */ };
+var strategy = {Twitter: require('passport-twitter').Strategy };
 
 // Database Connection
 /* TODO */
@@ -44,14 +51,27 @@ app.use(parser.body.json());
 app.use(require('method-override')());
 app.use(session_middleware);
 /* TODO: Passport Middleware Here*/
+app.use(passport.initialize());
+app.use(passport.session());
 
 /* TODO: Use Twitter Strategy for Passport here */
-
+passport.use(new strategy.Twitter({
+    consumerKey: process.env.TWITTER_CONSUMER_KEY,
+    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+    callbackURL: "/auth/twitter/callback"
+}, function(token, token_secret, profile, done) {
+    // What goes here? Refer to step 4.
+}));
 /* TODO: Passport serialization here */
-
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+passport.deserializeUser(function(user, done) {
+    done(null, user);
+});
 // Routes
 /* TODO: Routes for OAuth using Passport */
-// app.get("/", router.index.view);
+app.get("/", router.index.view);
 // More routes here if needed
 
 // io.use(function(socket, next) {
