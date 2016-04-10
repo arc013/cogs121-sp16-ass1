@@ -5,12 +5,8 @@ var twitterAuthSchema = new mongoose.Schema({
     "token": String,
     "username": String,
     "displayName": String,
-    "photos": [String]
+    "photos": [ {"value": String } ]
 
-}
-// , {
-// 	collection: 'User'
-// }
-);
+});
 
 exports.User = mongoose.model('twitterUser',twitterAuthSchema);

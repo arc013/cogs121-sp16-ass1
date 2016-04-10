@@ -77,7 +77,6 @@ passport.use(new strategy.Twitter({
     if (err)
         return done(err);
     if(!user) {
-    	console.log(profile.username);
         // (2) since the user is not found, create new user.
         // Refer to Assignment 0 to how create a new instance of a model
         var newUser = new models.User({
@@ -88,7 +87,7 @@ passport.use(new strategy.Twitter({
 	        "displayName" : profile.displayName,
 	        "photos" : profile.photos
         });
-        console.log(newUser)
+        // console.log(newUser)
 
         // set all of the user data that we need
         
@@ -96,11 +95,21 @@ passport.use(new strategy.Twitter({
         // save our user into the database
         newUser.save(function(err, newUser) {
                         if (err)
+                        	// console.log(err.errors);
                             throw err;
                         return done(null, newUser);
                     });
     } else {
         // (3) since the user is found, update user’s information
+        // var currentUser = new models.User({
+
+        // 	"twitterID" : profile.id,
+	       //  "token" : token,
+	       //  "username" : profile.username,
+	       //  "displayName" : profile.displayName,
+	       //  "photos" : profile.photos
+        // });
+        // console.log(currentUser);
         process.nextTick(function() {
             return done(null, profile);
         });
