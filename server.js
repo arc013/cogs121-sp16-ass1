@@ -70,24 +70,31 @@ passport.use(new strategy.Twitter({
     callbackURL: "/auth/twitter/callback"
 }, function(token, tokenSecret, profile, done) {
 
-    models.User.findOne({ "twitterID": profile.id }, function(err, user) {
+    // models.User.findOne({ "twitterID": profile.id }, function(err, user) {
+    mongoose.model('twitterUser').findOne({ "twitterID": profile.id }, function(err, user) {
+
     // (1) Check if there is an error. If so, return done(err);
     if (err)
         return done(err);
     if(!user) {
+    	console.log(profile.username);
         // (2) since the user is not found, create new user.
         // Refer to Assignment 0 to how create a new instance of a model
-        var newUser = new models.User();
+        var newUser = new models.User({
+
+        	"twitterID" : profile.id,
+	        "token" : token,
+	        "username" : profile.username,
+	        "displayName" : profile.displayName,
+	        "photos" : profile.photos
+        });
+        console.log(newUser)
 
         // set all of the user data that we need
-        newUser.twitterId = profile.id;
-        newUser.token = token;
-        newUser.username = profile.username;
-        newUser.displayName = profile.displayName;
-        newUser.photos = profile.photos;
-
+        
+        // console.log()
         // save our user into the database
-         newUser.save(function(err) {
+        newUser.save(function(err, newUser) {
                         if (err)
                             throw err;
                         return done(null, newUser);

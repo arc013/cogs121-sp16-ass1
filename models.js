@@ -7,9 +7,10 @@ var twitterAuthSchema = new mongoose.Schema({
     "displayName": String,
     "photos": [String]
 
-}, {
-	collection: 'User'
-});
+}
+// , {
+// 	collection: 'User'
+// }
+);
 
-var twitterModel = mongoose.model('twitterUser',twitterAuthSchema);
-exports.User = twitterModel;
+exports.User = mongoose.model('twitterUser',twitterAuthSchema);
