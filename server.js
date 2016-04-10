@@ -14,18 +14,12 @@ var handlebars = require('express-handlebars');
 require("dotenv").load();
 var models = require("./models");
 var db = mongoose.connection;
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/cogs121Assignment1');
-db.on('error', console.error.bind(console, 'Mongo DB Connection Error:'));
-db.once('open', function(callback) {
-    console.log("Database connected successfully.");
-});
-
 
 var router = { 
-	index: require("./routes/index")
+	index: require("./routes/index"),
+	chat: require("./routes/chat")
 };
 
-// var models = require("./");
 
 var parser = {
     body: require("body-parser"),
@@ -37,7 +31,11 @@ var strategy = {
 };
 
 // Database Connection
-/* TODO */
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://127.0.0.1/cogs121Assignment1');
+db.on('error', console.error.bind(console, 'Mongo DB Connection Error:'));
+db.once('open', function(callback) {
+    console.log("Database connected successfully.");
+});
 
 // session middleware
 var session_middleware = session({
@@ -71,14 +69,13 @@ passport.use(new strategy.Twitter({
 }, function(token, tokenSecret, profile, done) {
 
     // models.User.findOne({ "twitterID": profile.id }, function(err, user) {
-    mongoose.model('twitterUser').findOne({ "twitterID": profile.id }, function(err, user) {
+    models.User.findOne({ "twitterID": profile.id }, function(err, user) {
 
     // (1) Check if there is an error. If so, return done(err);
     if (err)
         return done(err);
     if(!user) {
         // (2) since the user is not found, create new user.
-        // Refer to Assignment 0 to how create a new instance of a model
         var newUser = new models.User({
 
         	"twitterID" : profile.id,
@@ -87,11 +84,9 @@ passport.use(new strategy.Twitter({
 	        "displayName" : profile.displayName,
 	        "photos" : profile.photos
         });
-        // console.log(newUser)
+        console.log("New User:")
+        console.log(newUser)
 
-        // set all of the user data that we need
-        
-        // console.log()
         // save our user into the database
         newUser.save(function(err, newUser) {
                         if (err)
@@ -101,15 +96,16 @@ passport.use(new strategy.Twitter({
                     });
     } else {
         // (3) since the user is found, update user’s information
-        // var currentUser = new models.User({
+        var currentUser = new models.User({
 
-        // 	"twitterID" : profile.id,
-	       //  "token" : token,
-	       //  "username" : profile.username,
-	       //  "displayName" : profile.displayName,
-	       //  "photos" : profile.photos
-        // });
-        // console.log(currentUser);
+        	"twitterID" : profile.id,
+	        "token" : token,
+	        "username" : profile.username,
+	        "displayName" : profile.displayName,
+	        "photos" : profile.photos
+        });
+        console.log("Current User:")
+        console.log(currentUser);
         process.nextTick(function() {
             return done(null, profile);
         });
@@ -125,13 +121,14 @@ passport.deserializeUser(function(user, done) {
     done(null, user);
 });
 // Routes
-/* TODO: Routes for OAuth using Passport */
 app.get("/", router.index.view);
-// More routes here if needed
+app.get("/chat", router.chat.view);
+/* TODO: Routes for OAuth using Passport */
 app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback',
   passport.authenticate('twitter', { successRedirect: '/chat',
                                      failureRedirect: '/' }));
+// More routes here if needed
 
 // io.use(function(socket, next) {
 //     session_middleware(socket.request, {}, next);
