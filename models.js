@@ -10,6 +10,7 @@ var twitterUserSchema = new mongoose.Schema({
 }, {
 	collection: "userdata"
 });
+
 var NewsFeedSchema= new mongoose.Schema({
     "user": String,
     "message": String,
@@ -17,7 +18,6 @@ var NewsFeedSchema= new mongoose.Schema({
     "photos": [ {"value": String } ]
 });
 
-exports.theNews=mongoose.model('NewsFeed', NewsFeedSchema);
 
 var courseSchema = new mongoose.Schema({
 	"name": String,
@@ -48,6 +48,7 @@ var courseRatingSchema = new mongoose.Schema({
 });
 
 exports.User = mongoose.model('twitterUser',twitterUserSchema);
+exports.theNews=mongoose.model('NewsFeed', NewsFeedSchema);
 exports.Course = mongoose.model('courseDetail',courseSchema);
 exports.Comment = mongoose.model('commentDetail',commentSchema);
 exports.OverallRating = mongoose.model('overallCourseRating',courseRatingSchema);
