@@ -34,7 +34,7 @@ var strategy = {
 };
 
 // Database Connection
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://admin:admin@ds023520.mlab.com:23520/cogs121assignment1');
+mongoose.connect(process.env.MONGOLAB_URI || process.env.MONGO_URI);
 db.on('error', console.error.bind(console, 'Mongo DB Connection Error:'));
 db.once('open', function(callback) {
     console.log("Database connected successfully.");
