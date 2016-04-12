@@ -16,19 +16,38 @@
     });
 
 
-    
+
+        /*socket.on('newsfeed', function(msg){
+            console.log(msg);
+        });*/
+
+
+
 
     socket.on("newsfeed", function(data) {
        // console.log(data);
         console.log("hi");
 
-        var parsedData=data;
+        var parsedData=JSON.stringify(data);
      // grab and parse data and assign it to the parsedData variable.
 
      // other possible solution(s) here.
-        $('#messages').prepend($('<li>').html(messageTemplate(parsedData)));
+        $('#messages').prepend($('<li>').html(messageTemplate(data)));
         function messageTemplate(parsedData) {
             // generate HTML text based on some data to be prepended into the list
+
+
+
+        var string='<li><div class="user"><div class="user-image"><img src="'
+            +parsedData.photos[0].value+
+            '"alt=""></div><div class="user-info"><span class="username">'
+            +parsedData.user+
+            '</span><br/><span class="posted">'
+            +parsedData.posted+
+            '</span></div></div><div class="message-content">'
+            +parsedData.message+ '</div></li>';
+            return string;
+
         }
      });
 

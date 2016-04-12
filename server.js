@@ -157,6 +157,7 @@ io.on('connection', function(socket) {
         var news = new models.theNews({
             "user": socket.request.session.passport.user.username,
             "message": msg,
+            "photos" : socket.request.session.passport.user.photos,
             "posted": Date.now()
         });
         //console.log(socket.request.session.passport.user);
@@ -167,7 +168,7 @@ io.on('connection', function(socket) {
                 throw err;
         });
 
-        io.emit("newsfeed", msg);
+        io.emit("newsfeed", news);
 
     });
 
