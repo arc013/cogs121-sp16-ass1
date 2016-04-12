@@ -10,6 +10,13 @@ var twitterUserSchema = new mongoose.Schema({
 }, {
 	collection: "userdata"
 });
+var NewsFeedSchema= new mongoose.Schema({
+    "user": String,
+    "message": String,
+    "posted": Date
+});
+
+exports.theNews=mongoose.model('NewsFeed', NewsFeedSchema);
 
 var courseSchema = new mongoose.Schema({
 	"name": String,

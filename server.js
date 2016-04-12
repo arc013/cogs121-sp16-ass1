@@ -15,6 +15,9 @@ require("dotenv").load();
 var models = require("./models");
 var db = mongoose.connection;
 
+//socket io
+var io = require('socket.io')(http);
+
 var router = { 
 	index: require("./routes/index"),
 	chat: require("./routes/chat")
@@ -129,12 +132,49 @@ app.get('/auth/twitter/callback',
   passport.authenticate('twitter', { successRedirect: '/chat',
                                      failureRedirect: '/' }));
 // More routes here if needed
+/*io.on('connection', function(socket){
+    console.log('a user connected');
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
+    });
+});*/
 
-// io.use(function(socket, next) {
-//     session_middleware(socket.request, {}, next);
-// });
+ io.use(function(socket, next) {
+     session_middleware(socket.request, {}, next);
+ });
 
 /* TODO: Server-side Socket.io here */
+
+/*io.on('connection', function(socket){
+    socket.on('chat message', function(msg){
+        console.log('message: ' + msg);
+    });
+
+
+});*/
+io.on('connection', function(socket) {
+    socket.on("chat message", function(msg) {
+        var news = new models.theNews({
+            "user": socket.request.session.passport.user.username,
+            "message": msg,
+            "posted": Date.now()
+        });
+        //console.log(socket.request.session.passport.user);
+
+        news.save(function(err, news) {
+            if (err)
+            // console.log(err.errors);
+                throw err;
+        });
+
+        io.emit("newsfeed", msg);
+
+    });
+
+});
+
+
+
 
 // Start Server
 http.listen(app.get("port"), function() {

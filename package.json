@@ -32,6 +32,6 @@
     "monk": "1.0.1",
     "passport": "0.3.2",
     "passport-twitter": "1.0.4",
-    "socket.io": "1.4.5"
+    "socket.io": "^1.4.5"
   }
 }
