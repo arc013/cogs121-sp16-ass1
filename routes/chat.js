@@ -1,5 +1,5 @@
 // var models = require("../models");
 
 exports.view = function(req, res) {
-    res.send("Chat!")
+    res.render("chat");
 };

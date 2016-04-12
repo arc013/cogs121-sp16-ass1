@@ -8,5 +8,12 @@ var twitterAuthSchema = new mongoose.Schema({
     "photos": [ {"value": String } ]
 
 });
+var NewsFeedSchema= new mongoose.Schema({
+    "user": String,
+    "message": String,
+    "posted": Date
+});
+
+exports.theNews=mongoose.model('NewsFeed', NewsFeedSchema);
 
 exports.User = mongoose.model('twitterUser',twitterAuthSchema);
