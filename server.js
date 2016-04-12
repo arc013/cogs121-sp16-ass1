@@ -84,8 +84,8 @@ passport.use(new strategy.Twitter({
 	        "displayName" : profile.displayName,
 	        "photos" : profile.photos
         });
-        console.log("New User:")
-        console.log(newUser)
+        // console.log("New User:")
+        // console.log(newUser)
 
         // save our user into the database
         newUser.save(function(err, newUser) {
@@ -96,16 +96,16 @@ passport.use(new strategy.Twitter({
                     });
     } else {
         // (3) since the user is found, update user’s information
-        var currentUser = new models.User({
+        // var currentUser = new models.User({
 
-        	"twitterID" : profile.id,
-	        "token" : token,
-	        "username" : profile.username,
-	        "displayName" : profile.displayName,
-	        "photos" : profile.photos
-        });
-        console.log("Current User:")
-        console.log(currentUser);
+        // 	"twitterID" : profile.id,
+	       //  "token" : token,
+	       //  "username" : profile.username,
+	       //  "displayName" : profile.displayName,
+	       //  "photos" : profile.photos
+        // });
+        // console.log("Current User:")
+        // console.log(currentUser);
         process.nextTick(function() {
             return done(null, profile);
         });
